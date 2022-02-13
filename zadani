@@ -1,0 +1,97 @@
+Úkolem je vytvoření serveru v jazyce C/C++ komunikujícího prostřednictvím protokolu HTTP, který bude poskytovat různé informace o systému. Server bude naslouchat na zadaném portu a podle url bude vracet požadované informace. Server musí správně zpracovávat hlavičky HTTP a vytvářet správné HTTP odpovědi. Typ odpovědi bude text/plain. Komunikace se serverem by měla být možná jak pomocí webového prohlížeče, tak nástroji typu wget a curl. Server musí být spustitelný v prostředí Linux Ubuntu 20.04 LTS  (https://ubuntu.com/).
+
+Server bude přeložitelný pomocí Makefile, který vytvoří spustitelný soubor hinfosvc.
+Tento server bude spustitelný s argumentem označující lokální port na kterém bude naslouchat požadavkům:
+
+./hinfosvc 12345
+
+
+Server bude možné ukončit pomocí CTRL+C. Server bude umět zpracovat následující tři typy dotazů, které jsou na server zaslané příkazem GET:
+
+
+1. Získání doménového jména
+
+Vrací síťové jméno počítače včetně domény, například:
+
+GET http://servername:12345/hostname
+
+merlin.fit.vutbr.cz
+
+
+2. Získání informací o CPU
+
+Vrací informaci o procesoru, například:
+
+GET http://servername:12345/cpu-name
+
+
+Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz
+
+
+3. Aktuální zátěž
+
+Vrací aktuální informace o zátěži. Tento vyžaduje výpočet z hodnot uvedených v souboru /proc/stat (viz odkaz níže). Výsledek je například:
+
+GET http://servername:12345/load
+
+65%
+
+Potřebné informace pro odpověď lze v systému získat pomocí některých příkazů systému (uname, lscpu) a/nebo ze souborů v adresáři /proc.
+
+IMPLEMENTACE
+
+Implementace serveru bude v jazyce C/C++. Pro implementaci serveru je nutné využít knihovnu soketů. Není přípustné využívat knihovny pro zpracování HTTP a podobně - cílem je lightweight server, který má minimum závislostí.
+
+Součástí projektu bude dokumentace, kterou bude představovat soubor Readme.md, jenž bude obsahovat:
+
+    stručný popis projektu
+    způsob spuštění projektu
+    příklady použití projektu
+
+
+
+DOKUMENTACE
+
+Součástí odevzdaného projektu je stručná dokumentace ve formě minimalistického souboru Readme.md (ve formátu Markdown). V tomto souboru bude stručně popsána funkce vytvořené aplikace, uveden autor, způsob použití vytvořené aplikace včetně ukázkových příkladů a případně další informace (viz například https://github.com/me-and-company/readme-template)
+
+ODEVZDÁNÍ
+
+
+Odevzdává se jeden soubor - archív pojmenovaný Vaším loginem. Archiv může být typu ZIP případně GZIP, například:
+
+xnovak00.zip
+
+V archivu musí být kompletní zdrojové kódy, soubory Makefile a Readme.md.
+
+HODNOCENÍ
+
+Hodnotí se funkčnost implementace (3/4 hodnocení) a její kvalita (1/4 hodnocení):
+
+    struktura projektu
+    srozumitelnost a jednoduchost kódu
+    dokumentace
+    množství závislostí na dalších knihovnách (rozumný balanc mezi tím co si napsat sám a co použít z knihoven)
+
+
+
+TESTOVÁNÍ
+
+Vyzkoušejte si, zda Vám fungují alespoň základní varianty, tedy:
+
+
+./hinfosvc 12345 &
+curl http://localhost:12345/hostname
+curl http://localhost:12345/cpu-name
+curl http://localhost:12345/load
+
+
+DOPORUČENÍ
+
+Zadání nepostihuje ani nemůže postihovat veškeré možnosti, které Vás napadnou při řešení nabo mohou nastat. V takovém případě je nutné navrhnou přijatelné a logické řešení. V případě, že si řešením nejste jisti se optejte prostřednictvím fóra.
+
+
+ODKAZY
+
+    Protokol HTTP RFC7231 - https://tools.ietf.org/html/rfc7231
+    HTTP pro vývojáře: https://developer.mozilla.org/en-US/docs/Web/HTTP
+    Výpočet CPU Load: https://stackoverflow.com/questions/23367857/accurate-calculation-of-cpu-usage-given-in-percentage-in-linux
