@@ -78,7 +78,7 @@ int handle_error(const int err_n) {
 // returns 0 on success, errno ERROR_NAME when reading failed
 int cpu_name() {
     // creating fptr from shell command output
-    FILE *cpu_name = popen("cat /proc/cpuinfo | grep \"model name\" | head -n 1 | awk '{split($0, str, \" \"); print str[4], str[5], str[6], str[7], str[8], str[9]}'", "r");
+    FILE *cpu_name = popen("cat /proc/cpuinfo | grep \"model name\" | head -n 1 | awk '{n = split($0, str, \" \"); for (i = 4; i < n+1; i++) printf str[i] \" \"}'", "r");
     // fptr check
     if(cpu_name == NULL) {
         return handle_error(ERROR_CPU);
