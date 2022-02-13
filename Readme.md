@@ -1,6 +1,6 @@
 # Simple HTTP server    
 
-HTTP server written in C. Serves on given port and returns: cpu name, hostname, current cpu load.
+HTTP server written in C. Serves on a given port and returns: cpu name, hostname, current cpu load.
 
 ## Compilation
 
