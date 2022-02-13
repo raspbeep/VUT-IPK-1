@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -Werror -Wall -Wextra -pedantic
 EXEC = hinfosvc
-TARGETS = Makefile errno.h hinfosvc.c
+TARGETS = Makefile errno.h hinfosvc.c Readme.md
 PACK = xkrato61
 
 all:
