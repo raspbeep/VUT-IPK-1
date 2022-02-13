@@ -16,7 +16,7 @@ $ ./hinfosvc [PORT]
 
 ## Usage
 
-### Get current CPU usage in %. Calculated from two readings(1 second apart) of cpu information from `/proc/stat`.
+#### Get current CPU usage in %. Calculated from two readings(1 second apart) of cpu information from `/proc/stat`.
 ```
 $ curl localhost:PORT/load
 ```
@@ -25,7 +25,7 @@ $ curl localhost:PORT/load
 42%
 ``
 
-### Get hostname of server machine from `/etc/hostname`.
+#### Get hostname of server machine from `/etc/hostname`.
 ```
 $ curl localhost:PORT/hostname
 ```
@@ -34,7 +34,7 @@ $ curl localhost:PORT/hostname
 fedora
 ``
 
-### Get CPU name and base frequency from `/proc/cpuinfo`.
+#### Get CPU name and base frequency from `/proc/cpuinfo`.
 ```
 $ curl localhost:PORT/cpu-name
 ```
