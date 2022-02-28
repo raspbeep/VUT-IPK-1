@@ -101,19 +101,16 @@ int cpu_name() {
 // output is written to http_resp.res_msg struct field
 // returns 0 on success, errno ERROR_NAME when reading failed
 int host_name() {
-    // creating fptr from shell command output
+    // creating fptr, reading from command, closing
     FILE *hostname = popen("cat /etc/hostname", "r");
-    // fptr check
     if(hostname == NULL) {
         return handle_error(ERROR_NAME);
     }
-    // reading from fptr
     if(fgets(http_resp.res_msg, BUFFER_SIZE, hostname) == NULL) {
         return handle_error(ERROR_NAME);
     }
     http_resp.res_msg[strlen(http_resp.res_msg)-1] = '\0';
 
-    // closing file ptr
     if(pclose(hostname) != 0) {
         return ERROR_CLOSE;
     }
@@ -130,17 +127,13 @@ int cpu_load_reading(long int_buff[10]) {
 
     // creating fptr from shell command output
     FILE *cpu_first = popen("head -n1 /proc/stat | awk -F ' ' 'BEGIN{sum=0}{for(i=1;i < NF;i++){cpu_sum = sum += $i;printf(\"%d \", $i);}}END{}'", "r");
-    // fptr check
     if(cpu_first == NULL) {
         return handle_error(ERROR_LOAD);
     }
-    // reading from fptr
     if(fgets(buff, BUFFER_SIZE, cpu_first) == NULL) {
         return handle_error(ERROR_LOAD);
     }
     buff[strlen(buff)-1] = '\0';
-
-    // closing file ptr
     if(pclose(cpu_first) != 0) {
         return ERROR_CLOSE;
     }
@@ -163,7 +156,6 @@ int cpu_load_reading(long int_buff[10]) {
             return handle_error(ERROR_LOAD);
         }
     }
-
     return 0;
 }
 
@@ -171,7 +163,6 @@ int cpu_load_reading(long int_buff[10]) {
 // output is written to http_resp.res_msg struct field
 // returns 0 on success, errno ERROR_RD when reading failed
 int cpu_load() {
-    // local buffers for calculations on output of cpu_load_readings()
     long first_read[10] = {0};
     long second_read[10] = {0};
 
@@ -181,12 +172,9 @@ int cpu_load() {
 
     // sleep between two reads
     sleep(1);
-
     if(cpu_load_reading(second_read) < 0) {
         return handle_error(ERROR_RD);
     }
-
-    // summing cpu usage info from separate columns
     long cpu_sum_first = 0;
     long cpu_sum_second = 0;
     for(int i = 0; i < 10; i++) {
@@ -203,7 +191,6 @@ int cpu_load() {
     // calculate percentage
     long cpu_usage = 100 * cpu_used / cpu_delta;
 
-    // write cpu usage to http_resp.res_msg
     sprintf(http_resp.res_msg, "%ld%%", cpu_usage);
 
     return 0;
@@ -228,7 +215,6 @@ int handle_request(const char *buff) {
     }
     domain[i - 1] = '\0';
 
-    // get the response (cpu-name, hostname, cpu load)
     int result;
     if(!strcmp(domain, "GET /cpu-name")) {
         result = cpu_name();
@@ -257,13 +243,11 @@ int respond_OK() {
     char *template = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: %lu\n\n%s\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + strlen(http_resp.res_msg) + 1));
-    // allocation check
     if(response == NULL) {
         return handle_error(ERROR_MEM);
     }
     // copying header+body to response
     sprintf(response, template, strlen(http_resp.res_msg), http_resp.res_msg);
-    // writing to and closing socket
     if(write(new_socket, response, strlen(response)) < 0) {
         return handle_error(ERROR_WRITE);
     }
@@ -281,13 +265,10 @@ int respond_int_err() {
     char *template = "HTTP/1.1 500 Internal Error\nContent-Type: text/plain\nContent-Length: 18\n\n500 Internal error\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + 1));
-    // allocation check
     if(response == NULL) {
         return handle_error(ERROR_MEM);
     }
-    // copying header+body to response
     sprintf(response, "%s", template);
-    // writing to and closing socket
     if(write(new_socket, response, strlen(response)) < 0) {
         return handle_error(ERROR_WRITE);
     }
@@ -305,13 +286,10 @@ int respond_bad_req() {
     char *template = "HTTP/1.1 400 Bad Request\nContent-Type: text/plain\nContent-Length: 15\n\n400 Bad Request\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + 1));
-    // allocation check
     if(response == NULL) {
         return handle_error(ERROR_MEM);
     }
-    // copying header+body to response
     sprintf(response, "%s", template);
-    // writing to and closing socket
     if(write(new_socket, response, strlen(response)) < 0) {
         return handle_error(ERROR_WRITE);
     }
