@@ -240,7 +240,7 @@ int handle_request(const char *buff) {
 // 200 OK template, reads data from http_resp struct
 // returns errno ERROR_WRITE when writing to a socket failed, ERROR_SOCK when closing a socket failed
 int respond_OK() {
-    char *template = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: %lu\n\n%s\n";
+    char *template = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %lu\r\n\r\n%s\r\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + strlen(http_resp.res_msg) + 1));
     if(response == NULL) {
@@ -262,7 +262,7 @@ int respond_OK() {
 // 500 Internal Server Error template
 // returns errno ERROR_WRITE when writing to a socket failed, ERROR_SOCK when closing a socket failed
 int respond_int_err() {
-    char *template = "HTTP/1.1 500 Internal Error\nContent-Type: text/plain\nContent-Length: 18\n\n500 Internal error\n";
+    char *template = "HTTP/1.1 500 Internal Error\r\nContent-Type: text/plain\r\nContent-Length: 18\r\n\r\n500 Internal error\r\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + 1));
     if(response == NULL) {
@@ -283,7 +283,7 @@ int respond_int_err() {
 // 400 Bad Request template
 // returns errno ERROR_WRITE when writing to a socket failed, ERROR_SOCK when closing a socket failed
 int respond_bad_req() {
-    char *template = "HTTP/1.1 400 Bad Request\nContent-Type: text/plain\nContent-Length: 15\n\n400 Bad Request\n";
+    char *template = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\nContent-Length: 15\r\n\r\n400 Bad Request\r\n";
     // +1 for null byte
     response = malloc(sizeof(char) * (strlen(template) + 1));
     if(response == NULL) {
