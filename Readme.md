@@ -1,4 +1,5 @@
 # Simple HTTP server    
+20/20b
 
 HTTP server written in C. Serves on a given port and returns: cpu name, hostname, current cpu load.
 
